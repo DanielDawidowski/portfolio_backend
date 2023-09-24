@@ -1,11 +1,4 @@
-import {
-  Application,
-  json,
-  urlencoded,
-  Response,
-  Request,
-  NextFunction,
-} from "express";
+import { Application, json, urlencoded, Response, Request, NextFunction } from "express";
 import Logger from "bunyan";
 import http from "http";
 import cors from "cors";
@@ -15,9 +8,9 @@ import cookieSession from "cookie-session";
 import HTTP_STATUS from "http-status-codes";
 import compression from "compression";
 import "express-async-errors";
-import { config } from "./config";
-import applicationRoutes from "./routes";
-import { CustomError, IErrorResponse } from "./helpers/error-handler";
+import { config } from "@root/config";
+import applicationRoutes from "@root/routes";
+import { CustomError, IErrorResponse } from "@root/helpers/error-handler";
 
 const SERVER_PORT = 5000;
 
@@ -44,7 +37,7 @@ export class PortfolioServer {
         name: "session",
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: config.NODE_ENV !== "development",
+        secure: config.NODE_ENV !== "development"
       })
     );
     app.use(hpp());
@@ -54,7 +47,7 @@ export class PortfolioServer {
         origin: config.CLIENT_URL,
         credentials: true,
         optionsSuccessStatus: 200,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
       })
     );
   }
@@ -71,24 +64,15 @@ export class PortfolioServer {
 
   private globalErrorHandler(app: Application): void {
     app.all("*", (req: Request, res: Response) => {
-      res
-        .status(HTTP_STATUS.NOT_FOUND)
-        .json({ message: `${req.originalUrl} not found` });
+      res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
-    app.use(
-      (
-        error: IErrorResponse,
-        req: Request,
-        res: Response,
-        next: NextFunction
-      ) => {
-        log.error(error);
-        if (error instanceof CustomError) {
-          return res.status(error.statusCode).json(error.serializeErrors());
-        }
-        next();
+    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+      log.error(error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.serializeErrors());
       }
-    );
+      next();
+    });
   }
 
   private async startServer(app: Application): Promise<void> {
