@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import { PortfolioServer } from "./setupServer";
-import { config } from "./config";
+import { config } from "@root/config";
 
 class Application {
   public initialize(): void {
