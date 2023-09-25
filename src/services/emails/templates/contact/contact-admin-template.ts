@@ -9,8 +9,7 @@ class ContactAdminTemplate {
     return ejs.render(fs.readFileSync(__dirname + "/contact-admin-template.ejs", "utf8"), {
       name,
       email,
-      message,
-      image_url: "https://i.ibb.co/S617hrN/Logo.jpg"
+      message
     });
   }
 }
