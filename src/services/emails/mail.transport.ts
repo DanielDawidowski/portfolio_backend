@@ -3,6 +3,7 @@ import Mail from "nodemailer/lib/mailer";
 import Logger from "bunyan";
 import { config } from "@root/config";
 import { BadRequestError } from "@root/helpers/error-handler";
+import { IContactTemplate } from "@email/interface/email.interface";
 
 interface IMailOptions {
   from: string;
@@ -14,11 +15,12 @@ interface IMailOptions {
 const log: Logger = config.createLogger("mailOptions");
 
 class MailTransport {
-  public async sendEmail(receiverEmail: string, subject: string, body: string): Promise<void> {
+  public async sendEmail(receiverEmail: string, subject: string, body: IContactTemplate): Promise<void> {
     this.developmentEmailSender(receiverEmail, subject, body);
   }
 
-  private async developmentEmailSender(receiverEmail: string, subject: string, body: string): Promise<void> {
+  private async developmentEmailSender(receiverEmail: string, subject: string, body: IContactTemplate): Promise<void> {
+    const { name, email, message } = body;
     const transporter: Mail = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -37,7 +39,12 @@ class MailTransport {
       from: `Aktywne Obozy <${config.SENDER_EMAIL!}>`,
       to: receiverEmail,
       subject,
-      html: body
+      html: `
+      <h4><bold>Email:</bold>  ${email}</h4>
+      <h4><bold>Pytanie od:</bold>  ${name}</h4>
+      <p><bold>Wiadomość:</bold> ${message}</p>
+      <hr />
+  `
     };
 
     try {
