@@ -9,6 +9,7 @@ class Config {
   public SECRET_KEY_ONE: string | undefined;
   public SECRET_KEY_TWO: string | undefined;
   public CLIENT_URL: string | undefined;
+  public SERVER_URL: string | undefined;
   public SENDER_EMAIL: string | undefined;
   public SENDER_EMAIL_PASSWORD: string | undefined;
 
@@ -18,6 +19,7 @@ class Config {
     this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || "";
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || "";
     this.CLIENT_URL = process.env.CLIENT_URL || "";
+    this.SERVER_URL = process.env.SERVER_URL || "";
     this.SENDER_EMAIL = process.env.SENDER_EMAIL || "";
     this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD || "";
   }

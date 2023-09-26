@@ -42,9 +42,16 @@ export class PortfolioServer {
     );
     app.use(hpp());
     app.use(helmet());
+    const allowedOrigins = [config.CLIENT_URL, config.SERVER_URL];
     app.use(
       cors({
-        origin: config.CLIENT_URL,
+        origin: (origin, callback) => {
+          if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
+            callback(null, true);
+          } else {
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
