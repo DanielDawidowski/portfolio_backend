@@ -44,7 +44,7 @@ export class PortfolioServer {
     app.use(helmet());
     app.use(
       cors({
-        origin: "*",
+        origin: [config.CLIENT_URL!, config.SERVER_URL!],
         credentials: true,
         optionsSuccessStatus: 200,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
