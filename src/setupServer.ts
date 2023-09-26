@@ -1,7 +1,7 @@
 import { Application, json, urlencoded, Response, Request, NextFunction } from "express";
 import Logger from "bunyan";
 import http from "http";
-import cors, { CorsOptions } from "cors";
+import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
 import cookieSession from "cookie-session";
@@ -42,23 +42,15 @@ export class PortfolioServer {
     );
     app.use(hpp());
     app.use(helmet());
-
-    app.use(cors(this.corsOptions));
+    app.use(
+      cors({
+        origin: "*",
+        credentials: true,
+        optionsSuccessStatus: 200,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      })
+    );
   }
-
-  private corsOptions: CorsOptions = {
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      const allowedOrigins: string[] = [config.CLIENT_URL!, config.SERVER_URL!];
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    optionsSuccessStatus: 200,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-  };
 
   private standardMiddleware(app: Application): void {
     app.use(compression());
